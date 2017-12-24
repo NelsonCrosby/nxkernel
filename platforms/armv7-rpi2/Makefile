@@ -25,13 +25,16 @@ debug: build/nxkernel.elf
 		-kernel $<'
 
 
-build/nxkernel.elf: build/asm.a #build/platform.a
+target = arm-nx-eabihf
+
+build/nxkernel.elf: build/asm.a build/$(target)/debug/libplatform.a
 	$(CC) -static -ffreestanding -nostdlib \
 		-T linker.ld \
 		-o $@ $(LDFLAGS) $^
 
-build/platform.a:
-	CARGO_TARGET_DIR=build cargo build --target=arm-none-eabi
+build/$(target)/debug/libplatform.a:
+	CARGO_TARGET_DIR=build \
+	xargo +nightly build --target=$(target)
 
 
 ASM_SRC = $(ASM:%=asm/%.s)

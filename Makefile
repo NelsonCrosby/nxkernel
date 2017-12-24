@@ -7,6 +7,7 @@ run: platforms/$(TARGET)/run
 debug: platforms/$(TARGET)/debug
 clean:
 	@rm -rvf platforms/*/build
+	@rm -vf platforms/*/Cargo.lock
 
 platforms/%/build/nxkernel.elf:
 	@mkdir -pv $(@D)

@@ -18,6 +18,9 @@ _start:
 	ldr	a1, =msg
 	bl	_write_cstr
 
+	@ Switch into rust
+	bl	platform_main
+
 	@ We're done here
 	b	platform_stop
 
