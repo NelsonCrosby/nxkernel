@@ -10,6 +10,8 @@ AR = arm-none-eabi-ar
 QEMU = qemu-system-arm
 GDB = arm-none-eabi-gdb
 
+XARGO_BUILD_TOOLCHAIN ?= +nightly
+
 
 run: build/nxkernel.elf
 	$(QEMU) \
@@ -34,7 +36,7 @@ build/nxkernel.elf: build/asm.a build/$(target)/debug/libplatform.a
 
 build/$(target)/debug/libplatform.a:
 	CARGO_TARGET_DIR=build \
-	xargo +nightly build --target=$(target)
+	xargo $(XARGO_BUILD_TOOLCHAIN) build --target=$(target)
 
 
 ASM_SRC = $(ASM:%=asm/%.s)
