@@ -35,7 +35,7 @@ build/nxkernel.elf: build/asm.a build/$(target)/debug/libplatform.a
 		-o $@ $(LDFLAGS) $^
 
 build/$(target)/debug/libplatform.a:
-	CARGO_TARGET_DIR=build \
+	CARGO_TARGET_DIR=build RUST_TARGET_PATH=$(shell pwd) \
 	xargo $(XARGO_BUILD_TOOLCHAIN) build --target=$(target)
 
 
