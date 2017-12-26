@@ -28,6 +28,7 @@
       "-Wl,-z,noexecstack"
     ]
   },
+  "panic-strategy": "abort",
   "relro-level": "full",
   "target-c-int-width": "32",
   "target-endian": "little",
