@@ -64,18 +64,16 @@ BCM_UART_BASE:
 
 
 	.text
-@ void platform_log_init()
-	.global platform_log_init
-@ void _write_lstr(unsigned len, char *data)
-	.global	_write_lstr
-@ void _write_cstr(char *data)
-	.global _write_cstr
+@ void _uart_init()
+	.global _uart_init
+@ void _uart_write_lstr(unsigned len, char *data)
+	.global	_uart_write_lstr
 
 
-@ void platform_log_init()
+@ void _uart_init()
 @ r0	: value to write
 @ ip	: peripheral base address
-platform_log_init:
+_uart_init:
 	push	{lr}
 
 	ldr	ip, =BCM_UART_BASE
@@ -121,12 +119,12 @@ platform_log_init:
 	pop	{pc}
 
 
-@ void _write_lstr(unsigned len, char *data)
+@ void _uart_write_lstr(unsigned len, char *data)
 @ a1(r0): string length
 @ a2(r1): next char address
 @ r2	: current char
 @ ip	: peripheral base address
-_write_lstr:
+_uart_write_lstr:
 	push	{lr}
 
 	ldr	ip, =BCM_UART_BASE

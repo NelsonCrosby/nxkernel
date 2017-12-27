@@ -6,9 +6,28 @@ extern crate rlibc;
 
 
 #[no_mangle]
-pub extern fn platform_main() {
-    let x = ["Hello", "World", "!"];
-    let y = x;
+pub extern fn main() {
+    log_init();
+    log("enter platform_main()\n");
+}
+
+
+extern {
+    fn _uart_init();
+    fn _uart_write_lstr(len: usize, data: *const u8);
+    fn _stop();
+}
+
+fn log_init() {
+    unsafe {
+        _uart_init();
+    }
+}
+
+fn log(message: &str) {
+    unsafe {
+        _uart_write_lstr(message.len(), message.as_ptr());
+    }
 }
 
 

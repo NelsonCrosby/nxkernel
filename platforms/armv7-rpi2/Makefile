@@ -35,6 +35,8 @@ build/$(target)/debug/libplatform.a:
 	CARGO_TARGET_DIR=build RUST_TARGET_PATH=$(shell pwd) \
 	xargo build --target=$(target)
 
+-include ./build/$(target)/debug/libplatform.d
+
 
 ASM_SRC = $(ASM:%=asm/%.s)
 ASM_OBJ = $(ASM:%=build/asm/%.o)
