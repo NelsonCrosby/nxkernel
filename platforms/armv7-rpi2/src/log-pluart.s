@@ -66,9 +66,9 @@ BCM_UART_BASE:
 	.text
 @ void _uart_init()
 	.global _uart_init
-@ void _uart_write_lstr(unsigned len, char *data)
+@ void _uart_write_lstr(unsigned len, const char *data)
 	.global	_uart_write_lstr
-@ void _uart_write_cstr(char *data)
+@ void _uart_write_cstr(const char *data)
 	.global _uart_write_cstr
 
 
@@ -121,7 +121,7 @@ _uart_init:
 	pop	{pc}
 
 
-@ void _uart_write_lstr(unsigned len, char *data)
+@ void _uart_write_lstr(unsigned len, const char *data)
 @ a1(r0): string length
 @ a2(r1): next char address
 @ r2	: current char
@@ -147,7 +147,7 @@ _write_lstr_loop:
 	bne	_write_lstr_loop
 	pop	{pc}
 
-@ void _uart_write_cstr(char *data)
+@ void _uart_write_cstr(const char *data)
 @ a1(r0): next char address
 @ r2	: current char
 _uart_write_cstr:

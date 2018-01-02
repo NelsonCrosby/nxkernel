@@ -1,9 +1,5 @@
 @ Implements the particular boot logic for this platform.
 
-	.data
-msg:	.string	"YATTA!\r\n"
-	.align	2
-
 	.section .text.boot
 	.global	_start
 
@@ -11,14 +7,10 @@ _start:
 	@ Give ourselves a stack
 	mov	sp, #0x8000
 
-	@ Set up logging
-	bl	_uart_init
+	@ Enter C main
+	bl	platform_main
 
-	@ Try a hello world...
-	ldr	a1, =msg
-	bl	_uart_write_cstr
-
-	@ We're done here
+	@ Be done
 	b	_stop
 
 	.text

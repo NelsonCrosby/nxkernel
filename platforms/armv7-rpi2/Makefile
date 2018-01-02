@@ -1,5 +1,5 @@
 
-FILES = boot.s
+FILES = boot.s main.c
 # Select logging UART driver
 FILES += log-pluart.s
 #FILES += log-muart.s    # See the note in log-muart.s before using
