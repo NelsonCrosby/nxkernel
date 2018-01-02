@@ -1,14 +1,15 @@
 
-ASM = boot
+FILES = boot.s
 # Select logging UART driver
-ASM += log-pluart
-#ASM += log-muart        # See the note in log-muart.s before using
+FILES += log-pluart.s
+#FILES += log-muart.s    # See the note in log-muart.s before using
 
 
 CC = arm-none-eabi-gcc
 AR = arm-none-eabi-ar
 QEMU = qemu-system-arm
 GDB = arm-none-eabi-gdb
+
 
 run: build/nxkernel.elf
 	$(QEMU) \
@@ -24,26 +25,26 @@ debug: build/nxkernel.elf
 		-kernel $<'
 
 
-target = arm-nx-eabihf
-
-build/nxkernel.elf: build/asm.a build/$(target)/debug/libplatform.a
+build/nxkernel.elf: build/platform.a
 	$(CC) -static -ffreestanding -nostdlib \
 		-T linker.ld \
 		-o $@ $(LDFLAGS) $^
 
-build/$(target)/debug/libplatform.a:
-	CARGO_TARGET_DIR=build RUST_TARGET_PATH=$(shell pwd) \
-	xargo build --target=$(target)
 
--include ./build/$(target)/debug/libplatform.d
+SRC := $(FILES:%=src/%)
+OBJ := $(FILES:%.c=build/c/%.o)
+OBJ := $(OBJ:%.s=build/asm/%.o)
+DEP := $(OBJ:.o=.d)
 
-
-ASM_SRC = $(ASM:%=asm/%.s)
-ASM_OBJ = $(ASM:%=build/asm/%.o)
-
-build/asm.a: $(ASM_OBJ)
+build/platform.a: $(OBJ)
 	$(AR) rsD $@ $^
 
-build/asm/%.o: asm/%.s
+build/asm/%.o: src/%.s
 	@mkdir -pv $(@D)
-	$(CC) -c -o $@ $(CFLAGS) $<
+	$(CC) -c -o $@ -MMD $(CFLAGS) $<
+
+build/c/%.o: src/%.c
+	@mkdir -pv $(@D)
+	$(CC) -c -o $@ -MMD $(CFLAGS) $<
+
+-include $(DEP)

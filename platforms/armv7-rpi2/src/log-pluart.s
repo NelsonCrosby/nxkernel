@@ -68,6 +68,8 @@ BCM_UART_BASE:
 	.global _uart_init
 @ void _uart_write_lstr(unsigned len, char *data)
 	.global	_uart_write_lstr
+@ void _uart_write_cstr(char *data)
+	.global _uart_write_cstr
 
 
 @ void _uart_init()
@@ -145,10 +147,10 @@ _write_lstr_loop:
 	bne	_write_lstr_loop
 	pop	{pc}
 
-@ void _write_cstr(char *data)
+@ void _uart_write_cstr(char *data)
 @ a1(r0): next char address
 @ r2	: current char
-_write_cstr:
+_uart_write_cstr:
 	push	{lr}
 
 	ldr	ip, =BCM_UART_BASE
