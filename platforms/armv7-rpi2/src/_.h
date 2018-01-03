@@ -8,6 +8,11 @@
  */
 void _stop();
 
+/** Initialize interrupt stuffs */
+void _intr_init();
+
+void _swi();
+
 /** Initialize the UART, for use as a logging backend. */
 void _uart_init();
 /** Write a string of a given length to the UART */

@@ -7,8 +7,8 @@
 @ It should be revised before trying to use it.
 
 	.data
-	.include "aux.s"
-	@ in case your syntax highlighting is broken: "
+#include "aux.s"
+
 
 	.text
 @ void platform_log_init()

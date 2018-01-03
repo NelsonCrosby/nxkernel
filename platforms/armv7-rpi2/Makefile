@@ -1,8 +1,8 @@
 
-FILES = boot.s main.c
+FILES = boot.S interrupt.S main.c misc.S
 # Select logging UART driver
-FILES += log-pluart.s
-#FILES += log-muart.s    # See the note in log-muart.s before using
+FILES += log-pluart.S
+#FILES += log-muart.S    # See the note in log-muart.s before using
 
 
 CC = arm-none-eabi-gcc
@@ -33,13 +33,13 @@ build/nxkernel.elf: build/platform.a
 
 SRC := $(FILES:%=src/%)
 OBJ := $(FILES:%.c=build/c/%.o)
-OBJ := $(OBJ:%.s=build/asm/%.o)
+OBJ := $(OBJ:%.S=build/asm/%.o)
 DEP := $(OBJ:.o=.d)
 
 build/platform.a: $(OBJ)
 	$(AR) rsD $@ $^
 
-build/asm/%.o: src/%.s
+build/asm/%.o: src/%.S
 	@mkdir -pv $(@D)
 	$(CC) -c -o $@ -MMD $(CFLAGS) $<
 
