@@ -1,8 +1,7 @@
 
 FILES = boot.S interrupt.S main.c misc.S
-# Select logging UART driver
-FILES += log-pluart.S
-#FILES += log-muart.S    # See the note in log-muart.s before using
+# Select UART driver
+FILES += uart-pl.S
 
 
 CFLAGS_ALL += -ggdb
