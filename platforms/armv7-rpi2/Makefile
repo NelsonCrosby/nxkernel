@@ -5,7 +5,8 @@ FILES += log-pluart.S
 #FILES += log-muart.S    # See the note in log-muart.s before using
 
 
-CFLAGS += -I../..
+CFLAGS_ALL += -ggdb
+CFLAGS += -I../.. $(CFLAGS_ALL)
 
 
 CC = arm-none-eabi-gcc
@@ -38,7 +39,7 @@ build/libkernel.a:
 	@mkdir -pv $(@D)
 	$(MAKE) -C ../../kernel $(shell pwd)/$@ \
 		build=$(shell pwd)/$(@D) \
-		CC=$(CC) AR=$(AR)
+		CC=$(CC) AR=$(AR) CFLAGS='$(CFLAGS_ALL)'
 
 
 SRC := $(FILES:%=src/%)
@@ -51,7 +52,7 @@ build/platform.a: $(OBJ)
 
 build/asm/%.o: src/%.S
 	@mkdir -pv $(@D)
-	$(CC) -c -o $@ -MMD $(CFLAGS) $<
+	$(CC) -c -o $@ -MMD $(ASMFLAGS) $<
 
 build/c/%.o: src/%.c
 	@mkdir -pv $(@D)

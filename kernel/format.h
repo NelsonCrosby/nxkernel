@@ -25,6 +25,10 @@ typedef struct {
  * The in-kernel alternative to fprintf.
  * The format spec should match that of
  * POSIX printf, where possible.
+ *
+ * Notable deviations from printf:
+ * - %b will write the contents of a length-string (buffer).
+ *    It consumes one size_t followed by one const char *.
  */
 void fmt_write(fmt_writer_t *writer, const char *msg_fmt, ...);
 
@@ -55,9 +59,9 @@ void fmt_write_hhc(fmt_writer_t *writer, char c);
  */
 void fmt_write_s(fmt_writer_t *writer, const char *s);
 /**
- * Write a length-string to the given writer.
+ * Write a length-string (buffer) to the given writer.
  */
-void fmt_write_ns(fmt_writer_t *writer, size_t len, const char *s);
+void fmt_write_b(fmt_writer_t *writer, size_t len, const char *s);
 
 
 /**

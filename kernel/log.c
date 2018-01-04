@@ -46,7 +46,7 @@ void log_write(
     for (i = 0; log_fmt[i] != '\0'; i += 1) {
         if (log_fmt[i] == '$') {
             // Dump queued part
-            fmt_write_ns(writer, i - point, log_fmt + point);
+            fmt_write_b(writer, i - point, log_fmt + point);
 
             // Check next character for action
             i += 1;
@@ -64,7 +64,7 @@ void log_write(
                 switch (level) {
                     #define _(val, s) \
                         case LOG_ ## val: \
-                            fmt_write(writer, s); \
+                            fmt_write_s(writer, s); \
                             break;
                     #define __(val) _(val, #val)
                     __(TRACE)
@@ -92,6 +92,6 @@ void log_write(
 
     // If there's more queued, dump it
     if (i - point) {
-        fmt_write_ns(writer, i - point, log_fmt + point);
+        fmt_write_b(writer, i - point, log_fmt + point);
     }
 }

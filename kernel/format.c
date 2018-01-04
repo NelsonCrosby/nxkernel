@@ -5,6 +5,10 @@
  * The in-kernel alternative to fprintf.
  * The format spec should match that of
  * POSIX printf, where possible.
+ *
+ * Notable deviations from printf:
+ * - %b will write the contents of a length-string (buffer).
+ *    It consumes one size_t followed by one const char *.
  */
 void fmt_write(fmt_writer_t *writer, const char *msg_fmt, ...)
 {
@@ -31,7 +35,7 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args)
     for (i = 0; msg_fmt[i] != '\0'; i += 1) {
         if (msg_fmt[i] == '%') {
             // Dump queued part
-            fmt_write_ns(writer, i - point, msg_fmt + point);
+            fmt_write_b(writer, i - point, msg_fmt + point);
 
             // Parse format part
             for (int terminal = 0; !terminal;) {
@@ -52,6 +56,19 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args)
                     fmt_write_d(writer, va_arg(args, int), 0);
                     terminal = 1;
                     break;
+                // %s => null-terminated string
+                case 's':
+                    fmt_write_s(writer, va_arg(args, const char *));
+                    terminal = 1;
+                    break;
+                // %b => length-string
+                case 'b':
+                    {
+                        size_t len = va_arg(args, size_t);
+                        fmt_write_b(writer, len, va_arg(args, const char *));
+                    }
+                    terminal = 1;
+                    break;
                 }
             }
 
@@ -62,7 +79,7 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args)
 
     // If there's more queued, dump it
     if (i - point) {
-        fmt_write_ns(writer, i - point, msg_fmt + point);
+        fmt_write_b(writer, i - point, msg_fmt + point);
     }
 }
 
@@ -106,7 +123,7 @@ static void _fmt_write_uint(
     s[i] = '\0';
     _srev(s);
 
-    fmt_write_ns(writer, i, s);
+    fmt_write_b(writer, i, s);
 }
 
 /**
@@ -145,13 +162,13 @@ void fmt_write_hhc(fmt_writer_t *writer, char c)
  */
 void fmt_write_s(fmt_writer_t *writer, const char *s)
 {
-    fmt_write_ns(writer, _slen(s), s);
+    fmt_write_b(writer, _slen(s), s);
 }
 
 /**
  * Write a length-string to the given writer.
  */
-void fmt_write_ns(fmt_writer_t *writer, size_t len, const char *s)
+void fmt_write_b(fmt_writer_t *writer, size_t len, const char *s)
 {
     writer->write(writer->ud, len, s);
 }
