@@ -19,8 +19,6 @@ void platform_main()
 
     _intr_init();
     TRACE("Interrupts enabled.");
-
-    // _swi();
 }
 
 

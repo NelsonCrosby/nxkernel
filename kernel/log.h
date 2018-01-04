@@ -4,7 +4,7 @@
 
 
 /* TODO: Make this changeable at runtime */
-#define LOG_FORMAT  "[$c] $l: $m\n"
+#define LOG_FORMAT  "[$c] $l: $m\r\n"
 
 
 /** Logging levels */
