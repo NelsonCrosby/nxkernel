@@ -5,6 +5,9 @@ FILES += log-pluart.S
 #FILES += log-muart.S    # See the note in log-muart.s before using
 
 
+CFLAGS += -I../..
+
+
 CC = arm-none-eabi-gcc
 AR = arm-none-eabi-ar
 QEMU = qemu-system-arm
@@ -25,10 +28,17 @@ debug: build/nxkernel.elf
 		-kernel $<'
 
 
-build/nxkernel.elf: build/platform.a
+build/nxkernel.elf: build/platform.a build/libkernel.a
 	$(CC) -static -ffreestanding -nostdlib \
 		-T linker.ld \
-		-o $@ $(LDFLAGS) $^
+		-o $@ $(LDFLAGS) $^ -lgcc
+
+
+build/libkernel.a:
+	@mkdir -pv $(@D)
+	$(MAKE) -C ../../kernel $(shell pwd)/$@ \
+		build=$(shell pwd)/$(@D) \
+		CC=$(CC) AR=$(AR)
 
 
 SRC := $(FILES:%=src/%)
