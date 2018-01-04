@@ -3,20 +3,54 @@
 #include "log.h"
 
 
-static fmt_writer_t *static_writer = NULL;
+static fmt_writer_t *default_writer = NULL;
 
 /** Set the default log output, returns the previous output */
 fmt_writer_t *log_set_writer(fmt_writer_t *writer)
 {
-    fmt_writer_t *old = static_writer;
-    static_writer = writer;
+    fmt_writer_t *old = default_writer;
+    default_writer = writer;
     return old;
 }
 
 /** Get the current default log output */
 fmt_writer_t *log_get_writer()
 {
-    return static_writer;
+    return default_writer;
+}
+
+
+static log_level_t default_level;
+
+/** Set the default minimum log level, returns the previous value */
+log_level_t log_set_level(log_level_t level)
+{
+    log_level_t old = default_level;
+    default_level = level;
+    return old;
+}
+
+/** Get the current default minimum log level */
+log_level_t log_get_level()
+{
+    return default_level;
+}
+
+
+static const char *default_format;
+
+/** Set the default log format, returns the previous value */
+const char *log_set_format(const char *format)
+{
+    const char *old = default_format;
+    default_format = format;
+    return old;
+}
+
+/** Get the current default log format */
+const char *log_get_format()
+{
+    return default_format;
 }
 
 
@@ -26,10 +60,16 @@ fmt_writer_t *log_get_writer()
  * which gets the default values for you,
  * and the TRACE(), DEBUG(), INFO(), ... macros
  * which make the call slightly less verbose.
+ *
+ * This function always returns zero;
+ * the return type is to allow the LOG() macro
+ * to do filtering.
  */
-void log_write(
+int log_write(
     fmt_writer_t *writer,
     const char *log_fmt, unsigned clock, log_level_t level,
+    const char *system, const char *func,
+    const char *file, unsigned line,
     const char *msg_fmt, ...
 )
 {
@@ -79,6 +119,22 @@ void log_write(
                     break;
                 }
                 break;
+            // $s => system
+            case 's':
+                fmt_write_s(writer, system);
+                break;
+            // $f => func
+            case 'f':
+                fmt_write_s(writer, func);
+                break;
+            // $F => file
+            case 'F':
+                fmt_write_s(writer, file);
+                break;
+            // $L => line
+            case 'L':
+                fmt_write_u(writer, line);
+                break;
             // $m => formatted message
             case 'm':
                 fmt_writev(writer, msg_fmt, ap);
@@ -94,4 +150,6 @@ void log_write(
     if (i - point) {
         fmt_write_b(writer, i - point, log_fmt + point);
     }
+
+    return 0;
 }
