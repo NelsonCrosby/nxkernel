@@ -20,9 +20,6 @@ void platform_main()
     _intr_init();
     TRACE("Interrupts enabled.");
 
-    const char *s = "foo bar baz";
-    INFO("embedded '%b' buffer", 8, s);
-
     // _swi();
 }
 

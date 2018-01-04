@@ -1,14 +1,16 @@
 
-FILES = format.c log.c
+FILES = format.c log.c string.c
 
 OBJ := $(FILES:%.c=$(build)/libkernel/%.o)
 DEP := $(OBJ:.o=.d)
 
 $(build)/libkernel.a: $(OBJ)
-	$(AR) rsD $@ $^
+	@echo 'AR $(@F)'
+	@$(AR) rsD $@ $^
 
 $(build)/libkernel/%.o: %.c
-	@mkdir -pv $(@D)
-	$(CC) -c -o $@ -MMD $(CFLAGS) $<
+	@mkdir -p $(@D)
+	@echo 'CC kernel/$<'
+	@$(CC) -c -o $@ -MMD $(CFLAGS) $<
 
 -include $(DEP)

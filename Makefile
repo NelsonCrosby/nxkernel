@@ -9,13 +9,17 @@ clean:
 	@rm -rvf platforms/*/build
 
 platforms/%/build/nxkernel.elf:
-	@mkdir -pv $(@D)
-	$(MAKE) -C $(@D)/.. build/$(@F)
+	@mkdir -p $(@D)
+	@echo 'MAKE $(@F)'
+	@$(MAKE) -C $(@D)/.. build/$(@F)
 platforms/%/build/nxkernel.img:
-	@mkdir -pv $(@D)
+	@mkdir -p $(@D)
+	@echo 'MAKE $(@F)'
 	$(MAKE) -C $(@D)/.. build/$(@F)
 
 platforms/%/run:
-	$(MAKE) -C $(@D) run
+	@echo 'MAKE run'
+	@$(MAKE) -C $(@D) run
 platforms/%/debug:
-	$(MAKE) -C $(@D) debug
+	@echo 'MAKE debug'
+	@$(MAKE) -C $(@D) debug

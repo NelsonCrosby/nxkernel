@@ -1,3 +1,4 @@
+#include "string.h"
 #include "format.h"
 
 
@@ -84,26 +85,6 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args)
 }
 
 
-/* TODO: Move _slen and _srev to string.c */
-static size_t _slen(const char *s)
-{
-    size_t count = 0;
-    while (s[count] != '\0')
-        count += 1;
-    return count;
-}
-
-static void _srev(char *s)
-{
-    char c;
-    for (size_t i = 0, k = _slen(s) - 1; i < k; i++, k--) {
-        c = s[i];
-        s[i] = s[k];
-        s[k] = c;
-    }
-}
-
-
 /**
  * Format an integer into a stream.
  * Handle the sign yourself.
@@ -121,7 +102,7 @@ static void _fmt_write_uint(
     } while ((n /= base) > 0);
 
     s[i] = '\0';
-    _srev(s);
+    lstr_rev(s, i);
 
     fmt_write_b(writer, i, s);
 }
@@ -154,7 +135,7 @@ void fmt_write_d(fmt_writer_t *writer, int u, int plus)
  */
 void fmt_write_hhc(fmt_writer_t *writer, char c)
 {
-    writer->write(writer->ud, 1, &c);
+    fmt_write_b(writer, 1, &c);
 }
 
 /**
@@ -162,7 +143,7 @@ void fmt_write_hhc(fmt_writer_t *writer, char c)
  */
 void fmt_write_s(fmt_writer_t *writer, const char *s)
 {
-    fmt_write_b(writer, _slen(s), s);
+    fmt_write_b(writer, str_len(s), s);
 }
 
 /**
@@ -178,15 +159,10 @@ struct _fmt_buf {
     size_t len;
     char *data;
 };
-/** strncpy's text into buffer */
+/** lstr_copy's text into buffer */
 static void _fmt_writestr(struct _fmt_buf *buf, size_t len, const char *text)
 {
-    for (size_t i = 0; i < len; i += 1) {
-        if (i == buf->len) break;
-
-        char c = text[i];
-        *(buf->data++) = c;
-    }
+    lstr_copy(text, len, buf->data, buf->len);
 }
 
 

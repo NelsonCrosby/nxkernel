@@ -30,14 +30,16 @@ debug: build/nxkernel.elf
 
 
 build/nxkernel.elf: build/platform.a build/libkernel.a
-	$(CC) -static -ffreestanding -nostdlib \
+	@echo 'LD $@ <- $^'
+	@$(CC) -static -ffreestanding -nostdlib \
 		-T linker.ld \
 		-o $@ $(LDFLAGS) $^ -lgcc
 
 
 build/libkernel.a:
-	@mkdir -pv $(@D)
-	$(MAKE) -C ../../kernel $(shell pwd)/$@ \
+	@mkdir -p $(@D)
+	@echo 'MAKE $(@F)'
+	@$(MAKE) -C ../../kernel $(shell pwd)/$@ \
 		build=$(shell pwd)/$(@D) \
 		CC=$(CC) AR=$(AR) CFLAGS='$(CFLAGS_ALL)'
 
@@ -48,14 +50,17 @@ OBJ := $(OBJ:%.S=build/asm/%.o)
 DEP := $(OBJ:.o=.d)
 
 build/platform.a: $(OBJ)
-	$(AR) rsD $@ $^
+	@echo 'AR $(@F)'
+	@$(AR) rsD $@ $^
 
 build/asm/%.o: src/%.S
-	@mkdir -pv $(@D)
-	$(CC) -c -o $@ -MMD $(ASMFLAGS) $<
+	@mkdir -p $(@D)
+	@echo 'AS platform/$<'
+	@$(CC) -c -o $@ -MMD $(ASMFLAGS) $<
 
 build/c/%.o: src/%.c
-	@mkdir -pv $(@D)
-	$(CC) -c -o $@ -MMD $(CFLAGS) $<
+	@mkdir -p $(@D)
+	@echo 'CC platform/$<'
+	@$(CC) -c -o $@ -MMD $(CFLAGS) $<
 
 -include $(DEP)
