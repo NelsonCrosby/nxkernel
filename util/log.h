@@ -1,8 +1,8 @@
 #pragma once
 #include <stdarg.h>
+#include <kernel/platform.h>
 
 #include "format.h"
-#include "platform.h"
 
 
 #define LOG_FORMAT_SIMPLE   "[$c] $s $l: $m"

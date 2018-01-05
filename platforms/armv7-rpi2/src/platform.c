@@ -1,5 +1,5 @@
 #define LOG_SYSTEM  "platform"
-#include <kernel/log.h>
+#include <util/log.h>
 
 #include "_.h"
 
