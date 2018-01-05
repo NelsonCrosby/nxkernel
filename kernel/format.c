@@ -38,6 +38,7 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args)
             // Dump queued part
             fmt_write_b(writer, i - point, msg_fmt + point);
 
+            enum { s_hh, s_h, s_i, s_l, s_ll } isz = s_i;
             // Parse format part
             for (int terminal = 0; !terminal;) {
                 i += 1;
@@ -47,9 +48,20 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args)
                     fmt_write_hhc(writer, '%');
                     terminal = 1;
                     break;
+                // %llx => long long
+                case 'l':
+                    isz = isz < s_l ? s_l : s_ll;
+                    break;
                 // %u => unsigned decimal
                 case 'u':
-                    fmt_write_u(writer, va_arg(args, unsigned));
+                    switch (isz) {
+                    case s_i:
+                        fmt_write_u(writer, va_arg(args, unsigned));
+                        break;
+                    case s_ll:
+                        fmt_write_llu(writer, va_arg(args, unsigned long long));
+                        break;
+                    }
                     terminal = 1;
                     break;
                 // %d => signed decimal
@@ -90,11 +102,11 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args)
  * Handle the sign yourself.
  */
 static void _fmt_write_uint(
-    fmt_writer_t *writer, unsigned n,
+    fmt_writer_t *writer, unsigned long long n,
     int base, const char *alphabet
 )
 {
-    char s[24];
+    char s[32];
     size_t i = 0;
 
     do {
@@ -113,7 +125,16 @@ static void _fmt_write_uint(
  */
 void fmt_write_u(fmt_writer_t *writer, unsigned u)
 {
-    _fmt_write_uint(writer, u, 10, "012456789");
+    _fmt_write_uint(writer, u, 10, "0123456789");
+}
+
+/**
+ * Write the decimal representation of
+ * an unsinged long long integer to the given writer.
+ */
+void fmt_write_llu(fmt_writer_t *writer, unsigned long long u)
+{
+    _fmt_write_uint(writer, u, 10, "0123456789");
 }
 
 /**

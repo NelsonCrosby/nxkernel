@@ -47,6 +47,11 @@ void fmt_writev(fmt_writer_t *writer, const char *msg_fmt, va_list args);
 void fmt_write_u(fmt_writer_t *writer, unsigned u);
 /**
  * Write the decimal representation of
+ * an unsinged long long integer to the given writer.
+ */
+void fmt_write_llu(fmt_writer_t *writer, unsigned long long u);
+/**
+ * Write the decimal representation of
  * a signed integer to the given writer.
  */
 void fmt_write_d(fmt_writer_t *writer, int d, int plus);

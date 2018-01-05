@@ -23,11 +23,14 @@ void platform_main()
 
     _intr_init();
     TRACE("Interrupts enabled.");
+
+    while (1) {
+        fmt_write(&uart_writer, "time: %u\r", platform_clock_now());
+    }
 }
 
 
-unsigned platform_clock_now()
+unsigned long long platform_clock_now()
 {
-    // TODO
-    return 0;
+    return _timer_clock_now();
 }

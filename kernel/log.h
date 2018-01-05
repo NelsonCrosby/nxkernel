@@ -54,13 +54,20 @@ const char *log_get_format();
  */
 int log_write(
     fmt_writer_t *writer,
-    const char *log_fmt, unsigned clock, log_level_t level,
+    const char *log_fmt, unsigned long long clock, log_level_t level,
     const char *system, const char *func,
     const char *file, unsigned line,
     const char *msg_fmt, ...
 );
 
 
+/**
+ * Calls log_write(), with
+ * current system,
+ * current func,
+ * current file,
+ * and current line.
+ */
 #define LOG_HERE(writer, format, clock, level, msg, ...) \
     log_write( \
         writer, \
@@ -70,7 +77,7 @@ int log_write(
     )
 
 /**
- * Calls log_write(), with
+ * Calls LOG_HERE(), with
  * the default writer,
  * the default format,
  * and the result of platform_clock_now(),

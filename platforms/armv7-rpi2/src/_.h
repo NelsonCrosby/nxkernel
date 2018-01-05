@@ -11,7 +11,8 @@ void _stop();
 /** Initialize interrupt stuffs */
 void _intr_init();
 
-void _swi();
+/** Get a time from the system clock */
+unsigned long long _timer_clock_now();
 
 /** Initialize the UART, for use as a logging backend. */
 void _uart_init();

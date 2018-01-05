@@ -2,12 +2,38 @@
 
 	.equ	BCM_PERI_BASE,	0x3F000000
 	.align 2
+BCM_STIMER_BASE:
+	.word	(BCM_PERI_BASE + 0x00003000)
+BCM_ATIMER_BASE:
+	.word	(BCM_PERI_BASE + 0x0000B400)
 BCM_GPIO_BASE:
 	.word	(BCM_PERI_BASE + 0x00200000)
-BCM_AUX_BASE:
-	.word	(BCM_PERI_BASE + 0x00215000)
 BCM_UART_BASE:
 	.word	(BCM_PERI_BASE + 0x00201000)
+BCM_AUX_BASE:
+	.word	(BCM_PERI_BASE + 0x00215000)
+
+@ System timer registers
+@ Offset these from BCM_STIMER_BASE
+	.equ	CS,	0x00
+	.equ	CLO,	0x04
+	.equ	CHI,	0x08
+	.equ	TC0,	0x0C
+	.equ	TC1,	0x10
+	.equ	TC2,	0x14
+	.equ	TC3,	0x18
+
+@ ARM timer registers
+@ Offset these from BCM_ATIMER_BASE
+	.equ	LOAD,	0x00
+	.equ	VALUE,	0x04
+	.equ	CONTROL,0x08
+	.equ	IRQACK,	0x0C
+	.equ	RAWIRQ,	0x10
+	.equ	MSKIRQ,	0x14
+	.equ	RELOAD,	0x18
+	.equ	PREDIV,	0x1C
+	.equ	COUNT,	0x20
 
 @ GPIO peripheral registers
 @ Offset these from BCM_GPIO_BASE
@@ -30,6 +56,17 @@ BCM_UART_BASE:
 	.equ	GPPUDCLK0,	0x98
 	.equ	GPPUDCLK1,	0x9C
 
+@ PL110 UART peripheral registers
+@ Offset these from BCM_UART_BASE
+	.equ	UART_DR,	0x00
+	.equ	UART_FR,	0x18
+	.equ	UART_IBRD,	0x24
+	.equ	UART_FBRD,	0x28
+	.equ	UARTLCR_LCRH,	0x2C
+	.equ	UART_CR,	0x30
+	.equ	UART_IMSC,	0x38
+	.equ	UART_ICR,	0x44
+
 @ Auxiliary peripheral registers
 @ Offset these from BCM_AUX_BASE
 	.equ	AUX_IRQ,	0x00
@@ -45,14 +82,3 @@ BCM_UART_BASE:
 	.equ	AUX_MU_CNTL_REG,0x60
 	.equ	AUX_MU_STAT_REG,0x64
 	.equ	AUX_MU_BAUD_REG,0x68
-
-@ PL110 UART peripheral registers
-@ Offset these from BCM_UART_BASE
-	.equ	UART_DR,	0x00
-	.equ	UART_FR,	0x18
-	.equ	UART_IBRD,	0x24
-	.equ	UART_FBRD,	0x28
-	.equ	UARTLCR_LCRH,	0x2C
-	.equ	UART_CR,	0x30
-	.equ	UART_IMSC,	0x38
-	.equ	UART_ICR,	0x44

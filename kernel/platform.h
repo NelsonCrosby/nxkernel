@@ -1,3 +1,3 @@
 #pragma once
 
-unsigned platform_clock_now();
+unsigned long long platform_clock_now();

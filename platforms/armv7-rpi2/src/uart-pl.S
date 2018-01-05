@@ -20,6 +20,7 @@
 @ ip	: peripheral base address
 _uart_init:
 	push	{lr}
+	dmb			@ Memory barrier for peripheral sync
 
 	ldr	ip, =BCM_UART_BASE
 	ldr	ip, [ip]
@@ -60,6 +61,7 @@ _uart_init:
 	mov	r0, #0x0301
 	str	r0, [ip, #UART_CR]
 
+	dmb			@ Memory barrier for peripheral sync
 	@ uart is ready to transmit!
 	pop	{pc}
 
@@ -71,6 +73,7 @@ _uart_init:
 @ ip	: peripheral base address
 _uart_write_lstr:
 	push	{lr}
+	dmb			@ Memory barrier for peripheral sync
 
 	ldr	ip, =BCM_UART_BASE
 	ldr	ip, [ip]
@@ -86,8 +89,10 @@ _write_lstr_loop:
 	str	r2, [ip, #UART_DR]
 	@ decr len
 	subs	a1, a1, #1
-	@ return if len == 0, else repeat
+	@ repeat if len
 	bne	_write_lstr_loop
+	@ else return
+	dmb			@ Memory barrier for peripheral sync
 	pop	{pc}
 
 @ void _uart_write_cstr(const char *data)
@@ -95,6 +100,7 @@ _write_lstr_loop:
 @ r2	: current char
 _uart_write_cstr:
 	push	{lr}
+	dmb			@ Memory barrier for peripheral sync
 
 	ldr	ip, =BCM_UART_BASE
 	ldr	ip, [ip]
@@ -104,12 +110,14 @@ _write_cstr_loop:
 	bl	_wait_ready
 	@ load first char immediately
 	ldrb	r2, [a1], +#1
-	@ if c == '\0', return
+	@ c == '\0'?
 	cmp	r2, #0
-	popeq	{pc}
-	@ not returning; write and repeat
-	str	r2, [ip, #UART_DR]
-	b	_write_cstr_loop
+	@ no; write and repeat
+	strne	r2, [ip, #UART_DR]
+	bne	_write_cstr_loop
+	@ yes; return
+	dmb			@ Memory barrier for peripheral sync
+	pop	{pc}
 
 @ void _wait_ready()
 @ r3	: flags are loaded here

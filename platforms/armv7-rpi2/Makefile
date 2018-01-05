@@ -1,5 +1,5 @@
 
-FILES = boot.S interrupt.S main.c misc.S
+FILES = boot.S interrupt.S timer.S main.c misc.S
 # Select UART driver
 FILES += uart-pl.S
 
