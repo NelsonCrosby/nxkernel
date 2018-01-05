@@ -3,8 +3,6 @@
 #include "aux.S"
 
 	.text
-@ void _timer_clock_init()
-	.global _timer_clock_init
 @ unsigned long long _timer_clock_now()
 	.global _timer_clock_now
 
@@ -12,7 +10,6 @@
 @ unsigned long long _timer_clock_now()
 _timer_clock_now:
 	ldr	ip, =BCM_STIMER_BASE
-	ldr	ip, [ip]
 
 _now_retry:
 	ldr	r1, [ip, #CHI]

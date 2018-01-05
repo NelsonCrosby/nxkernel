@@ -23,13 +23,11 @@ _uart_init:
 	dmb			@ Memory barrier for peripheral sync
 
 	ldr	ip, =BCM_UART_BASE
-	ldr	ip, [ip]
 	mov	r0, #0
 	str	r0, [ip, #UART_CR]
 
 	@ @ set up gpio pins
 	ldr	ip, =BCM_GPIO_BASE
-	ldr	ip, [ip]
 	@ @    4 << 15: FSEL15 - pin 15 = RX
 	@ @  | 4 << 12: FSEL14 - pin 14 = TX
 	@ mov	r0, #((4 << 15) | (4 << 12))
@@ -39,7 +37,6 @@ _uart_init:
 
 	@ uart config
 	ldr	ip, =BCM_UART_BASE
-	ldr	ip, [ip]
 	@ clear pending interrupts
 	mov	r0, #0x7FF
 	str	r0, [ip, #UART_ICR]
@@ -76,7 +73,6 @@ _uart_write_lstr:
 	dmb			@ Memory barrier for peripheral sync
 
 	ldr	ip, =BCM_UART_BASE
-	ldr	ip, [ip]
 	@ cancel if len == 0
 	cmp	a1, #0
 	moveq	pc, lr
@@ -103,7 +99,6 @@ _uart_write_cstr:
 	dmb			@ Memory barrier for peripheral sync
 
 	ldr	ip, =BCM_UART_BASE
-	ldr	ip, [ip]
 _write_cstr_loop:
 	@ this is a private function and
 	@ we know that it uses only r3 (which we don't)

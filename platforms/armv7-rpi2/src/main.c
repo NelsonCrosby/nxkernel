@@ -23,10 +23,6 @@ void platform_main()
 
     _intr_init();
     TRACE("Interrupts enabled.");
-
-    while (1) {
-        fmt_write(&uart_writer, "time: %u\r", platform_clock_now());
-    }
 }
 
 
